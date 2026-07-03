@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use TinySSL in your research, please cite our paper."
+title: "TinySSL: Distilling Foundation Model Features for Resource-Efficient Vision"
+authors:
+  - family-names: "Abdu"
+    given-names: "Emran"
+    orcid: ""
+    affiliation: "Independent"
+date-released: 2026-07-03
+url: "https://github.com/Emran-goat/tinyssl"
+repository-code: "https://github.com/Emran-goat/tinyssl"
+license: "Apache-2.0"
+preferred-citation:
+  type: article
+  title: "TinySSL: Distilling Foundation Model Features for Resource-Efficient Vision"
+  authors:
+    - family-names: "Abdu"
+      given-names: "Emran"
+  year: 2026
