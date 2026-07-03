@@ -3,10 +3,13 @@
   <p align="center">Distill DINOv2 features into 2.8M parameters. Train on CPU in 30 minutes.</p>
   <p align="center">
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
-    <a href="https://github.com/Emran-goat/tinyssl"><img src="https://img.shields.io/github/repo-size/Emran-goat/tinyssl" alt="Repo size"></a>
+    <a href="https://github.com/Emran-goat/tinyssl/releases"><img src="https://img.shields.io/github/v/release/Emran-goat/tinyssl" alt="Release"></a>
+    <a href="https://github.com/Emran-goat/tinyssl/actions"><img src="https://img.shields.io/github/actions/workflow/status/Emran-goat/tinyssl/ci.yml" alt="CI"></a>
+    <a href="https://pypi.org/project/tinyssl/"><img src="https://img.shields.io/pypi/pyversions/tinyssl" alt="Python"></a>
     <a href="https://github.com/Emran-goat/tinyssl/blob/main/paper/main.tex"><img src="https://img.shields.io/badge/paper-NeurIPS%20format-blueviolet" alt="Paper"></a>
-    <a href="https://huggingface.co/tinyssl"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-models-yellow" alt="Hugging Face"></a>
-    <a href="https://python.org"><img src="https://img.shields.io/badge/python-3.8%2B-blue" alt="Python"></a>
+    <a href="https://arxiv.org/abs/"><img src="https://img.shields.io/badge/arxiv-TinySSL-red" alt="arXiv"></a>
+    <a href="https://doi.org/10.5281/zenodo.21180996"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.21180996.svg" alt="DOI"></a>
+    <a href="https://huggingface.co/emran-py/tinyssl-paper"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Paper-yellow" alt="Hugging Face"></a>
   </p>
 </p>
 
@@ -190,9 +193,11 @@ tinyssl/
 
 The full paper is available in `paper/main.tex` (NeurIPS format). A pre-compiled PDF is at `paper/research-1.pdf`.
 
-## Citation
+## License
 
-If you use TinySSL in your research, please cite:
+TinySSL is released under the Apache 2.0 License. See [LICENSE](LICENSE) for details.
+
+## Citation
 
 ```bibtex
 @article{abdu2026tinyssl,
@@ -202,13 +207,3 @@ If you use TinySSL in your research, please cite:
   year={2026}
 }
 ```
-
-A `CITATION.cff` file is also included in the repository for automated citation tools.
-
-## Author
-
-**Emran Abdu** — [GitHub](https://github.com/Emran-goat) · [X / Twitter](https://x.com/Emran_py) · [LinkedIn](https://www.linkedin.com/in/emran-abdu-833981315/) · Email: `jakeniel98@gmail.com`
-
-## License
-
-TinySSL is released under the Apache 2.0 License. See [LICENSE](LICENSE) for details.
