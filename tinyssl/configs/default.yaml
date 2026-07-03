@@ -1,0 +1,10 @@
+# ponytail: one config, no validation, no CLI override
+lr: 0.0001
+weight_decay: 0.05
+batch_size: 64
+epochs: 300
+mask_ratios: [0.5, 0.75]
+augmentation_schedule:
+  "0-100": "light"
+  "100-200": "medium"
+  "200-300": "full"

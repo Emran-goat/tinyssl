@@ -1,0 +1,62 @@
+% neurips_2024.sty - Unofficial style mimicking NeurIPS 2024 format
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{neurips_2024}[2024/01/01 NeurIPS 2024 style]
+
+\RequirePackage{times}
+\RequirePackage[letterpaper,top=1in,left=0.75in,right=0.75in,bottom=1in]{geometry}
+\RequirePackage{fancyhdr}
+\RequirePackage{setspace}
+
+% Running header
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{\small TinySSL: Distilling Foundation Model Features for Resource-Efficient Vision}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Title formatting
+\def\@maketitle{%
+  \newpage
+  \null
+  \vskip 0.3in
+  \begin{center}%
+    {\LARGE\bfseries \@title \par}%
+    \vskip 0.2in
+    {\large
+     \lineskip .5em
+     \begin{tabular}[t]{c}%
+       \@author
+     \end{tabular}\par}%
+    \vskip 0.1in
+  \end{center}%
+  \par
+  \vskip 0.15in
+}
+
+% Abstract
+\renewenvironment{abstract}{%
+  \centerline{\large\bfseries Abstract}
+  \vspace{0.1in}
+  \begin{quote}\small
+}{%
+  \end{quote}
+  \vspace{0.2in}
+}
+
+% Section formatting
+\renewcommand{\section}{%
+  \@startsection{section}{1}{\z@}{-2.0ex plus -0.5ex minus -0.2ex}{1.5ex plus 0.3ex minus 0.2ex}{\large\bfseries\raggedright}%
+}
+
+\renewcommand{\subsection}{%
+  \@startsection{subsection}{2}{\z@}{-1.5ex plus -0.3ex minus -0.1ex}{1.0ex plus 0.2ex}{\normalsize\bfseries\raggedright}%
+}
+
+% Figure and table captions
+\RequirePackage[font=small,labelfont=bf]{caption}
+
+% Two column
+\RequirePackage{flushend}
+\setlength{\columnsep}{0.25in}
+\twocolumn

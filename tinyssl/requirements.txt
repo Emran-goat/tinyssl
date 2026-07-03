@@ -1,0 +1,11 @@
+torch
+torchvision
+timm
+medmnist
+scikit-learn
+matplotlib
+seaborn
+pandas
+transformers
+huggingface_hub
+datasets
