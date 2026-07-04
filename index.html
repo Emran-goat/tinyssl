@@ -6,51 +6,43 @@
 <title>TinySSL — Distill DINOv2 into 2.8M Parameters</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=IBM+Plex+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@300;400;500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --ink: #1a1a1a;
-  --paper: #f7f5f0;
-  --mist: #e8e4dc;
-  --stone: #9a9590;
-  --accent: #c45d3e;
-  --void: #2a2826;
+  --bg: #f4f1eb;
+  --bg2: #eae5dc;
+  --bg3: #ddd7cc;
+  --ink: #1c1917;
+  --ink2: #44403c;
+  --ink3: #78716c;
+  --terracotta: #c2410c;
+  --terracotta-light: #ea580c;
+  --cream: #fefce8;
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Zen Kaku Gothic New', sans-serif;
-  background: var(--paper);
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
   color: var(--ink);
   font-weight: 300;
-  line-height: 1.8;
+  line-height: 1.7;
   overflow-x: hidden;
 }
 
-/* Grain overlay */
+::selection { background: var(--terracotta); color: var(--cream); }
+
+/* Grain */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 9999;
-}
-
-/* Cursor dot */
-.cursor {
-  position: fixed;
-  width: 8px;
-  height: 8px;
-  background: var(--accent);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-  transition: transform 0.15s ease;
-  mix-blend-mode: difference;
 }
 
 /* Navigation */
@@ -60,587 +52,902 @@ nav {
   left: 0;
   right: 0;
   z-index: 100;
-  padding: 2rem 3rem;
+  padding: 1.5rem 4rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  mix-blend-mode: difference;
-  color: var(--paper);
+  backdrop-filter: blur(12px);
+  background: rgba(244, 241, 235, 0.7);
+  border-bottom: 1px solid rgba(221, 215, 204, 0.5);
 }
 
-nav a {
-  color: inherit;
+.nav-left { display: flex; align-items: center; gap: 2rem; }
+
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
   text-decoration: none;
-  font-size: 0.75rem;
+}
+
+.nav-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  opacity: 0.7;
-  transition: opacity 0.3s;
+  color: var(--terracotta);
+  border: 1px solid var(--terracotta);
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
 }
 
-nav a:hover { opacity: 1; }
+.nav-right { display: flex; align-items: center; gap: 2rem; }
+
+.nav-links { display: flex; gap: 2rem; }
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--terracotta); }
+
+.nav-socials { display: flex; gap: 1rem; }
+
+.nav-socials a {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bg3);
+  color: var(--ink3);
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 0.8rem;
+}
+
+.nav-socials a:hover {
+  border-color: var(--terracotta);
+  color: var(--terracotta);
+}
 
 /* Hero */
 .hero {
   min-height: 100vh;
+  display: grid;
+  grid-template-columns: 55% 45%;
+  padding: 7rem 4rem 4rem;
+  position: relative;
+}
+
+#hero-canvas { display: none; }
+
+.hero-left {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 8vw;
+  padding-right: 4rem;
   position: relative;
+  z-index: 1;
 }
 
-.hero-label {
+.hero-meta {
+  font-family: 'DM Mono', monospace;
   font-size: 0.7rem;
-  letter-spacing: 0.3em;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--stone);
+  color: var(--ink3);
   margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   opacity: 0;
-  animation: fadeUp 0.8s ease forwards 0.3s;
+  animation: fadeIn 0.6s ease forwards 0.2s;
 }
+
+.hero-meta .line { width: 40px; height: 1px; background: var(--ink3); }
 
 .hero h1 {
-  font-size: clamp(3rem, 8vw, 7rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-  max-width: 800px;
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(4rem, 7vw, 6.5rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
   opacity: 0;
-  animation: fadeUp 0.8s ease forwards 0.5s;
+  animation: fadeIn 0.8s ease forwards 0.4s;
 }
 
-.hero h1 span {
-  display: inline-block;
-  color: var(--accent);
-  position: relative;
-}
+.hero h1 em { font-style: italic; color: var(--terracotta); }
 
-.hero h1 span::after {
-  content: '';
-  position: absolute;
-  bottom: 0.1em;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  animation: lineGrow 0.6s ease forwards 1.2s;
+.hero h1 .thin {
+  font-weight: 200;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85em;
+  color: var(--ink2);
 }
 
 .hero-sub {
-  font-size: 1.1rem;
-  color: var(--stone);
-  max-width: 420px;
+  font-size: 1.15rem;
+  color: var(--ink2);
+  max-width: 440px;
   margin-top: 2rem;
   opacity: 0;
-  animation: fadeUp 0.8s ease forwards 0.7s;
+  animation: fadeIn 0.8s ease forwards 0.6s;
+}
+
+.hero-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-big-number {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(12rem, 22vw, 20rem);
+  font-weight: 400;
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  color: var(--bg3);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  animation: fadeIn 1s ease forwards 0.3s;
+  user-select: none;
+}
+
+.hero-big-number .accent { color: var(--terracotta); opacity: 0.15; }
+
+.hero-stats {
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards 0.8s;
 }
 
 .hero-stat {
   display: flex;
-  gap: 4rem;
-  margin-top: 4rem;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--bg3);
+}
+
+.hero-stat:last-child { border-bottom: none; }
+
+.hero-stat .val {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  min-width: 160px;
+}
+
+.hero-stat .val .unit {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.5em;
+  font-weight: 300;
+  color: var(--ink3);
+}
+
+.hero-stat .desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+.hero-cta {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
   opacity: 0;
-  animation: fadeUp 0.8s ease forwards 0.9s;
+  animation: fadeIn 0.8s ease forwards 1s;
 }
 
-.hero-stat div {
-  position: relative;
-}
-
-.hero-stat .number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1;
-  font-family: 'IBM Plex Mono', monospace;
-}
-
-.hero-stat .label {
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
+.btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--stone);
-  margin-top: 0.5rem;
+  text-decoration: none;
+  padding: 1rem 2rem;
+  transition: all 0.3s;
 }
 
-.scroll-line {
-  position: absolute;
-  bottom: 3rem;
-  left: 8vw;
-  width: 1px;
-  height: 60px;
-  background: var(--mist);
-  overflow: hidden;
-}
+.btn-primary { background: var(--ink); color: var(--bg); border: 1px solid var(--ink); }
+.btn-primary:hover { background: var(--terracotta); border-color: var(--terracotta); }
+.btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--bg3); }
+.btn-outline:hover { border-color: var(--ink); }
 
-.scroll-line::after {
-  content: '';
-  position: absolute;
-  top: -100%;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--accent);
-  animation: scrollDown 2s ease infinite;
-}
+/* Divider */
+.divider { height: 1px; background: var(--bg3); margin: 0 4rem; }
 
-/* Sections */
-section {
-  padding: 10rem 8vw;
-  position: relative;
-}
-
-.section-label {
-  font-size: 0.65rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--stone);
-  margin-bottom: 3rem;
-}
-
-/* Results grid */
-.results-grid {
+/* Indep banner */
+.indie-banner {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 4rem;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--mist);
-  max-width: 900px;
+  grid-template-columns: 1fr auto;
+  gap: 4rem;
+  align-items: center;
 }
 
-.result-card {
-  background: var(--paper);
-  padding: 3rem 2rem;
-  position: relative;
-  overflow: hidden;
-  cursor: default;
-  transition: background 0.3s, color 0.3s;
+.indie-banner h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 
-.result-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s ease;
-}
+.indie-banner h2 em { font-style: italic; color: var(--terracotta-light); }
 
-.result-card:hover::before {
-  transform: scaleX(1);
-}
-
-.result-card .dataset {
-  font-size: 0.7rem;
+.indie-banner .meta-col {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--stone);
-  margin-bottom: 1rem;
+  color: var(--ink3);
+  line-height: 2.2;
+}
+
+.indie-banner .meta-col a {
+  color: var(--ink3);
+  text-decoration: none;
   transition: color 0.3s;
 }
 
-.result-card .accuracy {
-  font-size: 2.2rem;
-  font-weight: 700;
-  font-family: 'IBM Plex Mono', monospace;
-  line-height: 1;
-}
+.indie-banner .meta-col a:hover { color: var(--terracotta-light); }
 
-.result-card .retention {
-  font-size: 0.8rem;
-  color: var(--stone);
-  margin-top: 0.75rem;
-}
+/* Section */
+section { padding: 5rem 4rem; }
 
-/* How it works */
-.how-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
-  max-width: 1000px;
-}
-
-.how-card {
-  position: relative;
-  padding: 2.5rem 0;
-  border-top: 1px solid var(--mist);
-}
-
-.how-card .number {
-  font-family: 'IBM Plex Mono', monospace;
+.section-label {
+  font-family: 'DM Mono', monospace;
   font-size: 0.7rem;
-  color: var(--accent);
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.1em;
-}
-
-.how-card h3 {
-  font-size: 1rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  line-height: 1.4;
-}
-
-.how-card p {
-  font-size: 0.85rem;
-  color: var(--stone);
-  line-height: 1.7;
-}
-
-/* Code block */
-.code-section {
-  background: var(--void);
-  color: var(--paper);
-  padding: 10rem 8vw;
-}
-
-.code-section .section-label {
-  color: var(--stone);
-}
-
-.code-block {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.85rem;
-  line-height: 2;
-  max-width: 600px;
-  position: relative;
-}
-
-.code-block .comment { color: var(--stone); }
-.code-block .keyword { color: var(--accent); }
-.code-block .string { color: #a8b5a0; }
-
-/* Comparison */
-.comparison {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--mist);
-  max-width: 700px;
-}
-
-.comparison-card {
-  background: var(--paper);
-  padding: 3rem;
-}
-
-.comparison-card .method {
-  font-size: 0.7rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--stone);
-  margin-bottom: 1rem;
+  color: var(--ink3);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.comparison-card .cost {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 1.8rem;
-  font-weight: 700;
-}
+.section-label .num { font-size: 0.75rem; color: var(--terracotta); }
 
-.comparison-card.tiny .cost { color: var(--accent); }
-
-/* CTA */
-.cta {
-  text-align: center;
-  padding: 15rem 8vw;
-}
-
-.cta h2 {
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 700;
-  line-height: 1.1;
+.section-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
   margin-bottom: 3rem;
 }
 
-.cta-links {
+/* Results */
+.results-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--bg3);
+}
+
+.result-block {
+  background: var(--bg);
+  padding: 3rem 3.5rem;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.result-block:hover { background: var(--bg2); }
+
+.result-block .dataset {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 1rem;
+}
+
+.result-block .accuracy {
+  font-family: 'Instrument Serif', serif;
+  font-size: 5rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.result-block .retention { font-size: 0.95rem; color: var(--ink2); margin-top: 0.75rem; }
+
+.result-block .bar {
+  margin-top: 1.5rem;
+  height: 3px;
+  background: var(--bg3);
+  position: relative;
+  overflow: hidden;
+}
+
+.result-block .bar-fill {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  background: var(--terracotta);
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.result-block.visible .bar-fill { width: var(--fill); }
+
+/* Method */
+.method-list { max-width: 900px; }
+
+.method-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 2.5rem;
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--bg3);
+}
+
+.method-item:last-child { border-bottom: none; }
+
+.method-item .num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: var(--bg3);
+  line-height: 1;
+  transition: color 0.4s;
+}
+
+.method-item:hover .num { color: var(--terracotta); }
+
+.method-item h3 { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 500; margin-bottom: 0.75rem; }
+.method-item p { font-size: 1rem; color: var(--ink2); line-height: 1.8; }
+
+/* Architecture diagram */
+.arch-section {
+  background: var(--bg2);
+  padding: 5rem 4rem;
+}
+
+.arch-diagram {
   display: flex;
-  gap: 2rem;
+  align-items: center;
   justify-content: center;
+  gap: 0;
+  margin-top: 3rem;
   flex-wrap: wrap;
 }
 
-.cta-links a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem 2rem;
-  border: 1px solid var(--ink);
-  color: var(--ink);
-  text-decoration: none;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
+.arch-block {
+  background: var(--bg);
+  border: 1px solid var(--bg3);
+  padding: 2rem 2.5rem;
+  text-align: center;
+  min-width: 160px;
+  transition: all 0.3s;
+}
+
+.arch-block:hover { border-color: var(--terracotta); transform: translateY(-2px); }
+
+.arch-block .label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  transition: all 0.3s ease;
+  color: var(--ink3);
+  margin-bottom: 0.75rem;
 }
 
-.cta-links a:hover {
+.arch-block .name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+}
+
+.arch-block .detail {
+  font-size: 0.8rem;
+  color: var(--ink3);
+  margin-top: 0.5rem;
+}
+
+.arch-arrow {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2rem;
+  color: var(--bg3);
+  padding: 0 0.5rem;
+}
+
+.arch-block.student { border-color: var(--terracotta); }
+.arch-block.student .name { color: var(--terracotta); }
+
+/* Code */
+.code-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+
+.code-block {
   background: var(--ink);
-  color: var(--paper);
+  color: var(--bg);
+  padding: 3rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 2.2;
+  position: relative;
 }
 
-.cta-links a.primary {
-  background: var(--ink);
-  color: var(--paper);
+.code-block::before {
+  content: 'terminal';
+  position: absolute;
+  top: -1.5rem; left: 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
 }
 
-.cta-links a.primary:hover {
-  background: var(--accent);
-  border-color: var(--accent);
+.code-block .cmt { color: var(--ink3); }
+.code-block .kw { color: var(--terracotta-light); }
+.code-block .fn { color: #fbbf24; }
+.code-block .str { color: #86efac; }
+
+.code-info h3 { font-family: 'Instrument Serif', serif; font-size: 2.5rem; font-weight: 400; margin-bottom: 1.5rem; }
+.code-info p { color: var(--ink2); margin-bottom: 2rem; line-height: 1.8; font-size: 1.05rem; }
+
+.code-list { list-style: none; }
+
+.code-list li {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--bg3);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
+
+.code-list li::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--terracotta);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Comparison */
+.comp-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--bg3);
+}
+
+.comp-card { background: var(--bg); padding: 2.5rem; transition: background 0.3s; }
+.comp-card:hover { background: var(--bg2); }
+.comp-card.highlight { background: var(--ink); color: var(--bg); }
+
+.comp-card .tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 1.5rem;
+}
+
+.comp-card.highlight .tag { color: var(--ink3); }
+
+.comp-card .price {
+  font-family: 'Instrument Serif', serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.comp-card.highlight .price { color: var(--terracotta-light); }
+
+.comp-card .params { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--ink3); margin-top: 0.75rem; }
+
+/* CTA */
+.cta-section { text-align: center; padding: 8rem 4rem; position: relative; }
+
+.cta-section h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+}
+
+.cta-section h2 em { font-style: italic; color: var(--terracotta); }
+.cta-section .sub { font-size: 1.15rem; color: var(--ink2); margin: 1.5rem 0 3rem; }
+.cta-buttons { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
 
 /* Footer */
 footer {
-  padding: 4rem 8vw;
-  border-top: 1px solid var(--mist);
+  padding: 3rem 4rem;
+  border-top: 1px solid var(--bg3);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  font-size: 0.75rem;
-  color: var(--stone);
+  align-items: flex-start;
+  gap: 2rem;
 }
 
-footer a {
-  color: var(--ink);
-  text-decoration: none;
+.footer-left {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--ink3);
+  line-height: 2;
 }
+
+.footer-right {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-right a {
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bg3);
+  color: var(--ink3);
+  text-decoration: none;
+  transition: all 0.3s;
+  font-size: 0.85rem;
+}
+
+.footer-right a:hover { border-color: var(--terracotta); color: var(--terracotta); }
 
 /* Animations */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes lineGrow {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-
-@keyframes scrollDown {
-  0% { top: -100%; }
-  100% { top: 100%; }
-}
-
-/* Reveal on scroll */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .code-layout { grid-template-columns: 1fr; }
+  .comp-grid { grid-template-columns: repeat(2, 1fr); }
+  .indie-banner { grid-template-columns: 1fr; gap: 2rem; }
+  .indie-banner .meta-col { text-align: left; }
+  .arch-diagram { gap: 0; }
+}
+
 @media (max-width: 768px) {
-  nav { padding: 1.5rem 2rem; }
-  .hero { padding: 0 2rem; }
-  .hero-stat { flex-direction: column; gap: 2rem; }
-  .results-grid { grid-template-columns: repeat(2, 1fr); }
-  .how-grid { grid-template-columns: 1fr; }
-  .comparison { grid-template-columns: 1fr; }
-  section { padding: 6rem 2rem; }
-  .code-section { padding: 6rem 2rem; }
-  .cta { padding: 8rem 2rem; }
-  footer { padding: 3rem 2rem; flex-direction: column; gap: 1rem; text-align: center; }
+  nav { padding: 1rem 2rem; }
+  .nav-links { display: none; }
+  .hero { padding: 5rem 2rem 3rem; }
+  .hero h1 { font-size: clamp(2.8rem, 10vw, 4rem); }
+  .hero-cta { flex-direction: column; }
+  .btn { width: 100%; text-align: center; display: block; }
+  section { padding: 4rem 2rem; }
+  .divider { margin: 0 2rem; }
+  .results-layout { grid-template-columns: 1fr; }
+  .method-item { grid-template-columns: 50px 1fr; gap: 1.5rem; }
+  .comp-grid { grid-template-columns: 1fr; }
+  .cta-section { padding: 5rem 2rem; }
+  .indie-banner { padding: 3rem 2rem; }
+  .arch-section { padding: 4rem 2rem; }
+  .arch-diagram { flex-direction: column; }
+  .arch-arrow { transform: rotate(90deg); }
+  footer { flex-direction: column; }
 }
 </style>
 </head>
 <body>
 
-<div class="cursor"></div>
-
 <nav>
-  <a href="#">TinySSL</a>
-  <div style="display:flex; gap:2rem;">
-    <a href="#results">Results</a>
-    <a href="#how">Method</a>
-    <a href="https://github.com/Emran-goat/tinyssl">GitHub</a>
+  <div class="nav-left">
+    <a href="#" class="nav-logo">tinyssl</a>
+    <span class="nav-badge">Independent Research</span>
+  </div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#results">Results</a>
+      <a href="#method">Method</a>
+      <a href="#code">Code</a>
+      <a href="https://github.com/Emran-goat/tinyssl">GitHub</a>
+    </div>
+    <div class="nav-socials">
+      <a href="https://github.com/Emran-goat" title="GitHub">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      </a>
+      <a href="https://x.com/Emran_py" title="X / Twitter">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href="https://linkedin.com/in/emran-abdu-833981315" title="LinkedIn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="https://huggingface.co/emran-py" title="Hugging Face">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 3c1.654 0 3 1.346 3 3s-1.346 3-3 3-3-1.346-3-3 1.346-3 3-3zm0 14.2c-2.502 0-4.71-1.288-6-3.24.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.952-3.498 3.24-6 3.24z"/></svg>
+      </a>
+      <a href="https://zenodo.org/record/21180996" title="Zenodo">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </a>
+    </div>
   </div>
 </nav>
 
 <section class="hero">
-  <div class="hero-label">Self-Supervised Learning / Model Compression</div>
-  <h1>Distill <span>DINOv2</span> into 2.8M parameters</h1>
-  <p class="hero-sub">Train strong visual representations on a single CPU in 30 minutes. No GPU. No labels. No drama.</p>
-  <div class="hero-stat">
-    <div>
-      <div class="number">97%+</div>
-      <div class="label">Accuracy Retained</div>
-    </div>
-    <div>
-      <div class="number">7×</div>
-      <div class="label">Fewer Parameters</div>
-    </div>
-    <div>
-      <div class="number">$1.50</div>
-      <div class="label">Training Cost</div>
+  <div id="hero-canvas"></div>
+  <div class="hero-left">
+    <div class="hero-meta"><span class="line"></span>Self-Supervised Learning · Model Compression</div>
+    <h1>Distill <em>DINOv2</em><br>into <span class="thin">2.8M</span><br>parameters</h1>
+    <p class="hero-sub">Train strong visual representations on a single CPU in 30 minutes. No GPU. No labels. No infrastructure.</p>
+    <div class="hero-cta">
+      <a href="https://github.com/Emran-goat/tinyssl" class="btn btn-primary">View on GitHub →</a>
+      <a href="https://zenodo.org/record/21180996" class="btn btn-outline">Read Paper →</a>
     </div>
   </div>
-  <div class="scroll-line"></div>
+  <div class="hero-right">
+    <div class="hero-big-number">2.8<span class="accent">M</span></div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="val">97<span class="unit"> %+ </span></div>
+        <div class="desc">Accuracy Retained</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">7<span class="unit">×</span></div>
+        <div class="desc">Fewer Parameters</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">$1.50</div>
+        <div class="desc">Training Cost</div>
+      </div>
+    </div>
+  </div>
 </section>
+
+<div class="indie-banner">
+  <h2>Built <em>independently</em><br>by a single researcher.</h2>
+  <div class="meta-col">
+    <div>Emran Abdu</div>
+    <div>Independent Researcher</div>
+    <div><a href="https://github.com/Emran-goat">github.com/Emran-goat</a></div>
+    <div><a href="https://x.com/Emran_py">@Emran_py</a></div>
+    <div><a href="https://linkedin.com/in/emran-abdu-833981315">LinkedIn</a></div>
+    <div><a href="mailto:jakeniel98@gmail.com">jakeniel98@gmail.com</a></div>
+  </div>
+</div>
 
 <section id="results">
-  <div class="section-label">01 — Results</div>
-  <div class="results-grid">
-    <div class="result-card reveal">
+  <div class="section-label"><span class="num">01</span> Results</div>
+  <h2 class="section-title">Downstream task performance</h2>
+  <div class="results-layout">
+    <div class="result-block reveal" style="--fill: 98.5%;">
       <div class="dataset">Flowers102</div>
       <div class="accuracy">96.3%</div>
-      <div class="retention">98.5% of DINOv2</div>
+      <div class="retention">98.5% of DINOv2-S/14 accuracy</div>
+      <div class="bar"><div class="bar-fill"></div></div>
     </div>
-    <div class="result-card reveal">
+    <div class="result-block reveal" style="--fill: 97.4%;">
       <div class="dataset">Oxford Pets</div>
       <div class="accuracy">92.1%</div>
-      <div class="retention">97.4% of DINOv2</div>
+      <div class="retention">97.4% of DINOv2-S/14 accuracy</div>
+      <div class="bar"><div class="bar-fill"></div></div>
     </div>
-    <div class="result-card reveal">
+    <div class="result-block reveal" style="--fill: 99.5%;">
       <div class="dataset">EuroSAT</div>
       <div class="accuracy">97.6%</div>
-      <div class="retention">99.5% of DINOv2</div>
+      <div class="retention">99.5% of DINOv2-S/14 accuracy</div>
+      <div class="bar"><div class="bar-fill"></div></div>
     </div>
-    <div class="result-card reveal">
+    <div class="result-block reveal" style="--fill: 96.8%;">
       <div class="dataset">BreastMNIST</div>
       <div class="accuracy">79.8%</div>
-      <div class="retention">96.8% of DINOv2</div>
+      <div class="retention">96.8% of DINOv2-S/14 accuracy</div>
+      <div class="bar"><div class="bar-fill"></div></div>
     </div>
   </div>
 </section>
 
-<section id="how">
-  <div class="section-label">02 — How It Works</div>
-  <div class="how-grid">
-    <div class="how-card reveal">
-      <div class="number">01</div>
-      <h3>Masked Image Modeling</h3>
-      <p>Mask 75% of patches. The student predicts teacher features at masked positions through a JEPA objective — no pixel reconstruction, no negative pairs.</p>
+<div class="divider"></div>
+
+<section id="method">
+  <div class="section-label"><span class="num">02</span> Method</div>
+  <h2 class="section-title">Three-objective distillation</h2>
+  <div class="method-list">
+    <div class="method-item reveal">
+      <div class="num">01</div>
+      <div>
+        <h3>Masked Image Modeling</h3>
+        <p>Mask 75% of patches. The student predicts teacher features at masked positions through a JEPA objective — no pixel reconstruction, no negative pairs.</p>
+      </div>
     </div>
-    <div class="how-card reveal">
-      <div class="number">02</div>
-      <h3>Feature Alignment</h3>
-      <p>Cosine similarity between student and teacher CLS tokens. Keeps the global representation consistent while the student learns its own tokenizer.</p>
+    <div class="method-item reveal">
+      <div class="num">02</div>
+      <div>
+        <h3>Feature Alignment</h3>
+        <p>Cosine similarity between student and teacher CLS tokens. Keeps the global representation consistent while the student learns its own tokenizer.</p>
+      </div>
     </div>
-    <div class="how-card reveal">
-      <div class="number">03</div>
-      <h3>KoLeo Regularization</h3>
-      <p>Uniformity constraint on the feature space. Prevents collapse and encourages diverse, well-distributed representations without momentum encoders.</p>
+    <div class="method-item reveal">
+      <div class="num">03</div>
+      <div>
+        <h3>KoLeo Regularization</h3>
+        <p>Uniformity constraint on the feature space. Prevents collapse and encourages diverse, well-distributed representations without momentum encoders.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<section class="code-section">
-  <div class="section-label">03 — Get Started</div>
-  <div class="code-block">
-    <div><span class="comment"># Install</span></div>
-    <div><span class="keyword">pip</span> install tinyssl</div>
-    <br>
-    <div><span class="comment"># Load a pre-trained model</span></div>
-    <div><span class="keyword">import</span> torch</div>
-    <div><span class="keyword">from</span> tinyssl.models.students <span class="keyword">import</span> TinySSLBase</div>
-    <br>
-    <div>model = TinySSLBase.<span class="keyword">from_pretrained</span>(<span class="string">"tinyssl-base-flowers102"</span>)</div>
-    <div>model.<span class="keyword">eval</span>()</div>
-    <br>
-    <div><span class="comment"># Extract features — that's it</span></div>
-    <div>features = model(images)  <span class="comment"># → (B, 256)</span></div>
+<div class="divider"></div>
+
+<div class="arch-section">
+  <div class="section-label"><span class="num">—</span> Architecture</div>
+  <h2 class="section-title">How the distillation pipeline flows</h2>
+  <div class="arch-diagram">
+    <div class="arch-block reveal">
+      <div class="label">Input</div>
+      <div class="name">Images</div>
+      <div class="detail">224×224 patches</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-block reveal">
+      <div class="label">Teacher (frozen)</div>
+      <div class="name">DINOv2-S/14</div>
+      <div class="detail">22M params</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-block student reveal">
+      <div class="label">Student (trained)</div>
+      <div class="name">TinySSL</div>
+      <div class="detail">2.8M params</div>
+    </div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-block reveal">
+      <div class="label">Output</div>
+      <div class="name">Features</div>
+      <div class="detail">256-dim vectors</div>
+    </div>
+  </div>
+</div>
+
+<section id="code">
+  <div class="section-label"><span class="num">03</span> Get Started</div>
+  <h2 class="section-title">Three lines to inference</h2>
+  <div class="code-layout">
+    <div class="code-block">
+      <span class="cmt"># Install</span><br>
+      <span class="kw">pip</span> install tinyssl<br>
+      <br>
+      <span class="cmt"># Load a pre-trained model</span><br>
+      <span class="kw">import</span> torch<br>
+      <span class="kw">from</span> tinyssl.models.students <span class="kw">import</span> TinySSLBase<br>
+      <br>
+      model = TinySSLBase.<span class="fn">from_pretrained</span>(<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;<span class="str">"tinyssl-base-flowers102"</span><br>
+      )<br>
+      model.<span class="fn">eval</span>()<br>
+      <br>
+      <span class="cmt"># Extract features</span><br>
+      features = model(images) <span class="cmt"># → (B, 256)</span>
+    </div>
+    <div class="code-info">
+      <h3>Install. Load. Infer.</h3>
+      <p>TinySSL ships with pre-trained weights for Flowers102, Oxford Pets, EuroSAT, and BreastMNIST.</p>
+      <ul class="code-list">
+        <li>ONNX export for production deployment</li>
+        <li>CoreML conversion for Apple Silicon</li>
+        <li>TorchScript for mobile inference</li>
+        <li>12MB model size — fits anywhere</li>
+      </ul>
+    </div>
   </div>
 </section>
+
+<div class="divider"></div>
 
 <section>
-  <div class="section-label">04 — Training Cost</div>
-  <div class="comparison">
-    <div class="comparison-card reveal">
-      <div class="method">DINOv2-S/14</div>
-      <div class="cost">$1,000,000+</div>
+  <div class="section-label"><span class="num">04</span> Cost</div>
+  <h2 class="section-title">Training cost comparison</h2>
+  <div class="comp-grid">
+    <div class="comp-card reveal">
+      <div class="tag">DINOv2-S/14</div>
+      <div class="price">$1,000,000+</div>
+      <div class="params">22M params</div>
     </div>
-    <div class="comparison-card tiny reveal">
-      <div class="method">TinySSL-Base</div>
-      <div class="cost">$1.50</div>
+    <div class="comp-card highlight reveal">
+      <div class="tag">TinySSL-Base</div>
+      <div class="price">$1.50</div>
+      <div class="params">2.8M params</div>
     </div>
-    <div class="comparison-card reveal">
-      <div class="method">MAE ViT-B</div>
-      <div class="cost">$30,000+</div>
+    <div class="comp-card reveal">
+      <div class="tag">MAE ViT-B</div>
+      <div class="price">$30,000+</div>
+      <div class="params">86M params</div>
     </div>
-    <div class="comparison-card reveal">
-      <div class="method">SimCLR</div>
-      <div class="cost">$15,000+</div>
+    <div class="comp-card reveal">
+      <div class="tag">SimCLR</div>
+      <div class="price">$15,000+</div>
+      <div class="params">28M params</div>
     </div>
   </div>
 </section>
 
-<section class="cta">
-  <h2>Start training<br>on your laptop.</h2>
-  <div class="cta-links">
-    <a href="https://github.com/Emran-goat/tinyssl" class="primary">View on GitHub</a>
-    <a href="https://zenodo.org/record/21180996">Read the Paper</a>
-    <a href="https://huggingface.co/emran-py/tinyssl-paper">Hugging Face</a>
+<div class="divider"></div>
+
+<section class="cta-section">
+  <h2>Start training<br><em>on your laptop.</em></h2>
+  <p class="sub">No GPU required. No labels needed. Just your CPU and a coffee.</p>
+  <div class="cta-buttons">
+    <a href="https://github.com/Emran-goat/tinyssl" class="btn btn-primary">View on GitHub →</a>
+    <a href="https://zenodo.org/record/21180996" class="btn btn-outline">Read the Paper →</a>
+    <a href="https://huggingface.co/emran-py/tinyssl-paper" class="btn btn-outline">Hugging Face →</a>
   </div>
 </section>
 
 <footer>
-  <div>© 2026 Emran Abdu · Apache 2.0</div>
-  <div><a href="https://github.com/Emran-goat/tinyssl">github.com/Emran-goat/tinyssl</a></div>
+  <div class="footer-left">
+    <div>© 2026 Emran Abdu</div>
+    <div>Independent Research · Apache 2.0</div>
+    <div><a href="https://github.com/Emran-goat/tinyssl">github.com/Emran-goat/tinyssl</a></div>
+  </div>
+  <div class="footer-right">
+    <a href="https://github.com/Emran-goat" title="GitHub">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    </a>
+    <a href="https://x.com/Emran_py" title="X / Twitter">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+    <a href="https://linkedin.com/in/emran-abdu-833981315" title="LinkedIn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+    </a>
+    <a href="https://huggingface.co/emran-py" title="Hugging Face">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 3c1.654 0 3 1.346 3 3s-1.346 3-3 3-3-1.346-3-3 1.346-3 3-3zm0 14.2c-2.502 0-4.71-1.288-6-3.24.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.952-3.498 3.24-6 3.24z"/></svg>
+    </a>
+    <a href="https://zenodo.org/record/21180996" title="Zenodo">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </a>
+  </div>
 </footer>
 
 <script>
-// Cursor
-const cursor = document.querySelector('.cursor');
-let mouseX = 0, mouseY = 0;
-
-document.addEventListener('mousemove', e => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-});
-
-function animateCursor() {
-  cursor.style.left = mouseX - 4 + 'px';
-  cursor.style.top = mouseY - 4 + 'px';
-  requestAnimationFrame(animateCursor);
-}
-animateCursor();
-
 // Reveal on scroll
 const reveals = document.querySelectorAll('.reveal');
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry, i) => {
     if (entry.isIntersecting) {
-      setTimeout(() => {
-        entry.target.classList.add('visible');
-      }, i * 100);
+      setTimeout(() => entry.target.classList.add('visible'), i * 100);
       observer.unobserve(entry.target);
     }
   });
-}, { threshold: 0.2 });
-
+}, { threshold: 0.15 });
 reveals.forEach(el => observer.observe(el));
 
-// Parallax on hero stats
-document.addEventListener('scroll', () => {
-  const scrolled = window.scrollY;
-  const stats = document.querySelector('.hero-stat');
-  if (stats && scrolled < window.innerHeight) {
-    stats.style.transform = `translateY(${scrolled * 0.15}px)`;
-    stats.style.opacity = 1 - (scrolled / window.innerHeight);
-  }
-});
-
-// Hover effect on result cards
-document.querySelectorAll('.result-card').forEach(card => {
-  card.addEventListener('mouseenter', () => {
-    card.style.background = 'var(--void)';
-    card.style.color = 'var(--paper)';
-    card.querySelector('.dataset').style.color = 'var(--stone)';
-  });
-  card.addEventListener('mouseleave', () => {
-    card.style.background = '';
-    card.style.color = '';
-    card.querySelector('.dataset').style.color = '';
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
   });
 });
 </script>
