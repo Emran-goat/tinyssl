@@ -10,6 +10,7 @@
     <a href="https://arxiv.org/abs/"><img src="https://img.shields.io/badge/arxiv-TinySSL-red" alt="arXiv"></a>
     <a href="https://doi.org/10.5281/zenodo.21180996"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.21180996.svg" alt="DOI"></a>
     <a href="https://huggingface.co/emran-py/tinyssl-paper"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Paper-yellow" alt="Hugging Face"></a>
+    <a href="https://figshare.com/articles/32898665"><img src="https://img.shields.io/badge/figshare-Paper-green" alt="figshare"></a>
   </p>
 </p>
 
@@ -192,6 +193,8 @@ tinyssl/
 ## Paper
 
 The full paper is available in `paper/main.tex` (NeurIPS format). A pre-compiled PDF is at `paper/research-1.pdf`.
+
+<iframe src="https://widgets.figshare.com/articles/32898665/embed?show_title=1" width="568" height="351" allowfullscreen frameborder="0"></iframe>
 
 ## License
 
