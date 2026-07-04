@@ -3,9 +3,7 @@
   <p align="center">Distill DINOv2 features into 2.8M parameters. Train on CPU in 30 minutes.</p>
   <p align="center">
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="License"></a>
-    <a href="https://github.com/Emran-goat/tinyssl/releases"><img src="https://img.shields.io/github/v/release/Emran-goat/tinyssl" alt="Release"></a>
     <a href="https://github.com/Emran-goat/tinyssl/actions"><img src="https://img.shields.io/github/actions/workflow/status/Emran-goat/tinyssl/ci.yml" alt="CI"></a>
-    <a href="https://pypi.org/project/tinyssl/"><img src="https://img.shields.io/pypi/pyversions/tinyssl" alt="Python"></a>
     <a href="https://github.com/Emran-goat/tinyssl/blob/main/paper/main.tex"><img src="https://img.shields.io/badge/paper-NeurIPS%20format-blueviolet" alt="Paper"></a>
     <a href="https://arxiv.org/abs/"><img src="https://img.shields.io/badge/arxiv-TinySSL-red" alt="arXiv"></a>
     <a href="https://doi.org/10.5281/zenodo.21180996"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.21180996.svg" alt="DOI"></a>
