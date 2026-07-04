@@ -89,9 +89,67 @@ python -m tinyssl.train.evaluate \
 
 | Variant | Parameters | Download |
 |---------|-----------|----------|
-| TinySSL-Base | 2.8M | [Flowers102](https://huggingface.co/tinyssl/tinyssl-base-flowers102) |
-| TinySSL-Tiny | 0.3M | [Flowers102](https://huggingface.co/tinyssl/tinyssl-tiny-flowers102) |
-| TinySSL-CNN | 3.0M | [Flowers102](https://huggingface.co/tinyssl/tinyssl-cnn-flowers102) |
+| TinySSL-Base | 2.8M | Coming soon |
+| TinySSL-Tiny | 0.3M | Coming soon |
+| TinySSL-CNN | 3.0M | Coming soon |
+
+Pre-trained weights will be hosted on Hugging Face Hub. Train your own using the instructions above — training takes ~30 minutes on CPU.
+
+## Deployment
+
+TinySSL can be exported to standard formats for edge deployment:
+
+### ONNX Export
+
+```python
+import torch
+from tinyssl.models.students import TinySSLBase
+
+model = TinySSLBase.from_pretrained("tinyssl-base-flowers102")
+model.eval()
+
+dummy = torch.randn(1, 3, 224, 224)
+torch.onnx.export(model, dummy, "tinyssl_base.onnx", opset_version=14)
+```
+
+### CoreML (Apple Silicon)
+
+```bash
+pip install coremltools
+python -c "
+import torch, coremltools as ct
+from tinyssl.models.students import TinySSLBase
+
+model = TinySSLBase.from_pretrained('tinyssl-base-flowers102')
+model.eval()
+dummy = torch.randn(1, 3, 224, 224)
+traced = torch.jit.trace(model, dummy)
+mlmodel = ct.convert(traced, inputs=[ct.ImageType(shape=(1, 3, 224, 224))])
+mlmodel.save('tinyssl_base.mlpackage')
+"
+```
+
+### TorchScript (mobile)
+
+```python
+import torch
+from tinyssl.models.students import TinySSLBase
+
+model = TinySSLBase.from_pretrained("tinyssl-base-flowers102")
+model.eval()
+scripted = torch.jit.trace(model, torch.randn(1, 3, 224, 224))
+scripted.save("tinyssl_base_mobile.pt")
+```
+
+### Edge Benchmark (estimated)
+
+| Device | Format | Inference (224×224) | Memory |
+|--------|--------|-------------------|--------|
+| iPhone 14 (Neural Engine) | CoreML | ~2ms | ~12MB |
+| Raspberry Pi 5 (ARM Cortex) | ONNX | ~15ms | ~12MB |
+| Laptop CPU (i7) | PyTorch | ~5ms | ~12MB |
+
+*Note: Edge benchmarks are estimated based on model size and architecture. Actual performance varies by hardware and runtime optimization.*
 
 ## Training
 
