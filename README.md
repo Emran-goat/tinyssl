@@ -11,6 +11,7 @@
     <a href="https://doi.org/10.5281/zenodo.21180996"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.21180996.svg" alt="DOI"></a>
     <a href="https://huggingface.co/emran-py/tinyssl-paper"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Paper-yellow" alt="Hugging Face"></a>
     <a href="https://figshare.com/articles/32898665"><img src="https://img.shields.io/badge/figshare-Paper-green" alt="figshare"></a>
+    <a href="https://emran-goat.github.io/tinyssl/"><img src="https://img.shields.io/badge/Landing%20Page-Live-brightgreen" alt="Website"></a>
   </p>
 </p>
 
@@ -19,6 +20,8 @@
 ## Overview
 
 Vision foundation models like DINOv2 produce powerful representations, but training them costs millions in GPU compute. TinySSL gives you a 2.8M-parameter student model that learns from a frozen DINOv2 teacher in under 30 minutes on a single CPU — no GPU required, no labeled data needed.
+
+**[View Landing Page →](https://emran-goat.github.io/tinyssl/)**
 
 The student combines a CNN tokenizer with a 2-layer transformer and trains with a composite MIM-JEPA + alignment + KoLeo loss. Across four domain benchmarks, TinySSL retains over 97% of DINOv2's linear-probe accuracy at 7x fewer parameters and roughly 1/500,000th of the training cost.
 
